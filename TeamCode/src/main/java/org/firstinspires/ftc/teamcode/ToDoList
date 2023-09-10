@@ -1,0 +1,67 @@
+Center Stage:
+Color sensors to differentiate colors
+Locking mechanism like a key chain thing
+2910 robot
+
+
+
+ToDo List:
+    Add Improved Tank Drive into MecDrive
+    Add Units to Mechanisms (Degrees + mm)
+    TRANSFER ALL DRIVETRAIN CONSTANTS into NEBULA CONSTANTS
+    Look at Faster Gradle Times - Document for future easy access
+    Create Value for Enum GenericType
+    Implement Field Centric Turning
+
+
+Documentation: https://docs.ftclib.org/ftclib/
+Turning in a Certain Direction //Check if this works for other angles
+    // Turns counter clockwise
+    drive.turn(Math.toRadians(180) + 1e-6);
+    // Turns clockwise
+    drive.turn(Math.toRadians(180) - 1e-6);
+
+
+Test:
+    Test Anti-Tip
+    See if Values show up on Dashboard and are changeable
+    Test Align to a Direction - Teleop
+        Alignment to something with PID in teleop
+    Test Potentiometer for accurate Arm Movements
+    Driver Override button for the minimum and maximum positions
+    TODO: Testing Github CodeSpace
+    Test Feedforward
+        Find Max Velocity/Acceleration after Tuning by using ArmFeedforward.maxAchievableAcceleration
+    Test Motor Group
+    TODO: Test if final removes values from Dashboard
+    Test Override Safety Boolean + Button
+    Test Current Draw
+            LynxModule
+    Test all Positional Enums Static
+    Test Shooter
+
+
+Done:
+    Create Six Wheel Drives
+        Add DefaultDriveCommand with Anti-Tip
+    Implement Through Bore Encoder
+    Test Nebula Motor and Servo - Works
+    Test Cycle Tracker - Works
+    Fix shooterhood Naming - Simple
+
+    Test Angles on Servo - Doesn't Work, but positional works
+    Implement Feedforward to all Mechanisms: https://docs.ftclib.org/ftclib/features/controllers
+        Trapezoid Motion Profiling
+    CHANGE ALL MOTORS TO NEBULA MOTORS
+    Intake - SetPower and at least pid Both Options
+    Type in the Type of Motor in Nebula Constants like the RPM of the Motor
+    Servo Shooter Hood
+    Add the accumulated time of the total CycleTracker
+    Would I be able to remove @Config on all extended subsystems?
+    Put in GoBilda Type in NebulaMotor
+    Add Static for Nebula Constants
+    Think How should I do setSetPoint
+
+
+Other Codes
+https://github.com/Botbusters4635/2022FTCRobotCode/tree/master

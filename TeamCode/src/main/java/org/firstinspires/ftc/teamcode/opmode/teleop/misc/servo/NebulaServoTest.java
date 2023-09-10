@@ -1,0 +1,34 @@
+package org.firstinspires.ftc.teamcode.opmode.teleop.misc.servo;
+
+
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.util.nebulaHardware.NebulaServo;
+
+//@Disabled
+@TeleOp
+public class NebulaServoTest extends OpMode {
+    NebulaServo servo;
+    double pos = 0;
+    @Override
+    public void init() {
+        servo = new NebulaServo(hardwareMap, "clawS2", NebulaServo.Direction.Forward, 0,360, true);
+    }
+
+    @Override
+    public void loop() {
+        if(gamepad1.dpad_down){pos -= 0.001;}
+        else if(gamepad1.dpad_up){pos += 0.001;}
+
+        if(gamepad1.right_bumper){pos = 0;}
+        else if(gamepad1.left_bumper){pos = 1;}
+
+        pos = Math.min(Math.max(pos, 0), 1);
+        servo.setPosition(pos);
+        telemetry.addData("NormalServoTest Pos: ", servo.getPosition());
+        telemetry.addData("Desired Pos: ", pos);
+        telemetry.update();
+
+    }
+}
