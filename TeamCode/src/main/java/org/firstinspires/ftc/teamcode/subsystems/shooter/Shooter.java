@@ -21,9 +21,9 @@ public class Shooter extends SubsystemBase {
     protected final PIDFController controller;
     protected final NebulaMotorGroup motorGroup;
 
-    public static ShooterValue INTAKE = make(ShooterEnum.INTAKE,1);
+//    public static ShooterValue INTAKE = make(ShooterEnum.INTAKE,1);
     public static ShooterValue OUTTAKE = make(ShooterEnum.OUTTAKE,5);
-    public static ShooterValue STOP = make(ShooterEnum.STOP,1);
+    public static ShooterValue STOP = make(ShooterEnum.STOP,0);
 
     protected ShooterEnum shooterRPM;
     protected Telemetry telemetry;

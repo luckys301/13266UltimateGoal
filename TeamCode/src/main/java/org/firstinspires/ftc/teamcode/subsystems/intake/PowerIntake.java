@@ -32,7 +32,7 @@ public class PowerIntake extends SubsystemBase {
             this.reset = reset;
         }
     }
-    IntakePower shooterRPM = IntakePower.STOP;
+    IntakePower intakeRPM = IntakePower.STOP;
     Telemetry telemetry;
     public final NebulaMotor motor, motor2;
 

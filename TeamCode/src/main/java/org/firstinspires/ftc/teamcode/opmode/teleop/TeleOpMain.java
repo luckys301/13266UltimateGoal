@@ -8,11 +8,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.drive.teleop.mec.DefaultMecDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.drive.trajectory.TurnToCommand;
-import org.firstinspires.ftc.teamcode.subsystems.Claw;
+import org.firstinspires.ftc.teamcode.subsystems.Pusher;
 import org.firstinspires.ftc.teamcode.subsystems.drive.mecDrive.MecDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drive.mecDrive.MecDriveSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.pivot.Pivot;
-import org.firstinspires.ftc.teamcode.subsystems.slide.Slide;
+import org.firstinspires.ftc.teamcode.subsystems.intake.PowerIntake;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.util.CycleTracker.CycleTracker;
 import org.firstinspires.ftc.teamcode.util.NebulaConstants;
 import org.firstinspires.ftc.teamcode.util.teleop.GamepadTrigger;
@@ -27,10 +27,10 @@ public class TeleOpMain extends MatchOpMode {
     private final CycleTracker cycleTracker = new CycleTracker(telemetry);
 
     // Subsystems
-    private Pivot pivot;
-    private Claw claw;
     private MecDriveSubsystem mecDriveSubsystem;
-    private Slide slide;
+    private PowerIntake powerIntake;
+    private Shooter shooter;
+    private Pusher pusher;
 
     @Override
 
@@ -40,30 +40,41 @@ public class TeleOpMain extends MatchOpMode {
 //          driverGamepad.gamepad.runRumbleEffect(Gamepad.RumbleEffect.Step);
         operatorGamepad = new GamepadEx(gamepad2);
 
-        pivot = new Pivot(telemetry, hardwareMap, true);
-        claw = new Claw(telemetry, hardwareMap, true);
         mecDriveSubsystem = new MecDriveSubsystem(new MecDrive(hardwareMap, telemetry, true), telemetry, hardwareMap);
         mecDriveSubsystem.init();
-        slide = new Slide(telemetry, hardwareMap, true);
-//        pivot.resetOffset();
-        pivot.moveInitializationPosition();
+        powerIntake = new PowerIntake(telemetry, hardwareMap, true);
+        shooter = new Shooter(telemetry, hardwareMap, true);
+        pusher = new Pusher(telemetry, hardwareMap, true);
+
     }
 
     @Override
     public void configureButtons() {
         mecDriveSubsystem.setDefaultCommand(
             new DefaultMecDriveCommand(mecDriveSubsystem, driverGamepad, true));
-
-
-//        cycleTracker.resetTimer();
-//        //Can Rumble Gamepads; If need to Rumble both Gamepads, might need to use queueEffect - Doesn't WORK
-//        driverGamepad.gamepad.rumble(1,1, 100);
-
         (new GamepadButton(driverGamepad, GamepadKeys.Button.A))
             .whenPressed(new InstantCommand(mecDriveSubsystem::reInitializeIMU));
-        new GamepadButton(driverGamepad, GamepadKeys.Button.DPAD_DOWN)//TODO:Test
-            .toggleWhenPressed(new InstantCommand(()-> NebulaConstants.Gamepad.overrideSafety = true),
-                new InstantCommand(()-> NebulaConstants.Gamepad.overrideSafety = false));
+
+//        new GamepadButton(driverGamepad, GamepadKeys.Button.DPAD_DOWN)//TODO:Test
+//            .toggleWhenPressed(new InstantCommand(()-> NebulaConstants.Gamepad.overrideSafety = true),
+//                new InstantCommand(()-> NebulaConstants.Gamepad.overrideSafety = false));
+
+        new GamepadTrigger(driverGamepad, GamepadKeys.Trigger.RIGHT_TRIGGER)
+            .whenHeld(powerIntake.setSetPointCommand(PowerIntake.IntakePower.INTAKE))
+            .whenReleased(powerIntake.setSetPointCommand(PowerIntake.IntakePower.STOP));
+        new GamepadTrigger(driverGamepad, GamepadKeys.Trigger.LEFT_TRIGGER)
+            .whenHeld(powerIntake.setSetPointCommand(PowerIntake.IntakePower.OUTTAKE))
+            .whenReleased(powerIntake.setSetPointCommand(PowerIntake.IntakePower.STOP));
+
+//        new GamepadButton(driverGamepad, GamepadKeys.Button.RIGHT_BUMPER)
+//            .whenPressed(pusher.shootCommand());
+//
+//        (new GamepadButton(operatorGamepad, GamepadKeys.Button.LEFT_BUMPER))
+//            .toggleWhenPressed(
+//                new InstantCommand(()->shooter.setSetPointCommand(Shooter.OUTTAKE)),
+//                new InstantCommand(()->shooter.setSetPointCommand(Shooter.STOP)));
+
+
 
         //Ways to use buttons
 //        new GamepadButton(driverGamepad, GamepadKeys.Button.LEFT_BUMPER)
@@ -78,30 +89,18 @@ public class TeleOpMain extends MatchOpMode {
 //            .whenPressed(new TurnToTeleop(mecDriveSubsystem,180, telemetry)) //doesn't work
             .whenReleased(new InstantCommand(()->mecDriveSubsystem.stop()));
 
-        (new GamepadTrigger(operatorGamepad, GamepadKeys.Trigger.LEFT_TRIGGER))//To Test
-            .whileActiveOnce(new InstantCommand(()-> cycleTracker.trackCycle(1)));
-//            .whileActiveOnce(new InstantCommand(()->        driverGamepad.gamepad.rumble(1,1, -1)));
-        (new GamepadTrigger(operatorGamepad, GamepadKeys.Trigger.RIGHT_TRIGGER))
-            .whileActiveOnce(new InstantCommand(()-> cycleTracker.trackCycle(2)));
-//        new GamepadTrigger(driverGamepad, GamepadKeys.Trigger.LEFT_TRIGGER)
-//            .and(new GamepadButton(operatorGamepad, GamepadKeys.Button.LEFT_BUMPER))
-//            .whileActiveContinuous(new SlowMecDriveCommand(mecDriveSubsystem, driverGamepad, true));
-//        new GamepadButton(driverGamepad, GamepadKeys.Button.LEFT_BUMPER)
-//            .and(new GamepadTrigger(operatorGamepad, GamepadKeys.Trigger.LEFT_TRIGGER))
-//            .whileActiveContinuous(new SlowMecDriveCommand(mecDriveSubsystem, driverGamepad, true))
-//        new GamepadButton(driverGamepad, GamepadKeys.Button.LEFT_BUMPER).or()
-//            .whileHeld(new SlowMecDriveCommand(mecDriveSubsystem, driverGamepad, true));
-//        new GamepadButton(driverGamepad, GamepadKeys.Button.LEFT_BUMPER).and().negate()
-//            .whileHeld(new SlowMecDriveCommand(mecDriveSubsystem, driverGamepad, true));
-
-        (new GamepadButton(operatorGamepad, GamepadKeys.Button.A))  //TODO:TEST
-            .toggleWhenPressed(
-                new InstantCommand(()-> NebulaConstants.Gamepad.overrideSafety = false),
-                new InstantCommand(()-> NebulaConstants.Gamepad.overrideSafety = true));
+//        (new GamepadTrigger(operatorGamepad, GamepadKeys.Trigger.LEFT_TRIGGER))//To Test
+//            .whileActiveOnce(new InstantCommand(()-> cycleTracker.trackCycle(1)));
+////            .whileActiveOnce(new InstantCommand(()->        driverGamepad.gamepad.rumble(1,1, -1)));
+//        (new GamepadTrigger(operatorGamepad, GamepadKeys.Trigger.RIGHT_TRIGGER))
+//            .whileActiveOnce(new InstantCommand(()-> cycleTracker.trackCycle(2)));
 
 
+//        (new GamepadButton(operatorGamepad, GamepadKeys.Button.A))  //TODO:TEST
+//            .toggleWhenPressed(
+//                new InstantCommand(()-> NebulaConstants.Gamepad.overrideSafety = false),
+//                new InstantCommand(()-> NebulaConstants.Gamepad.overrideSafety = true));
 
-        mecDriveSubsystem.setDefaultCommand(new DefaultMecDriveCommand(mecDriveSubsystem, driverGamepad, true));
     }
 
     @Override
