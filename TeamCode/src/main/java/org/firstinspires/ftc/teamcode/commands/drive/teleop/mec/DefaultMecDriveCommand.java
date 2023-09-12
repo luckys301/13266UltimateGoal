@@ -41,9 +41,9 @@ public class DefaultMecDriveCommand extends CommandBase {
             x = NebulaConstants.Gamepad.isDriverOneDeadband(driverGamepad.getLeftX()),
             rx = NebulaConstants.Gamepad.isDriverOneDeadband(driverGamepad.getRightX());
 
-        y = NebulaConstants.Gamepad.cubeInput(y);
-        x = NebulaConstants.Gamepad.cubeInput(x);
-        rx = NebulaConstants.Gamepad.cubeInput(rx);
+        y = NebulaConstants.cubeInput(y);
+        x = NebulaConstants.cubeInput(x);
+        rx = NebulaConstants.cubeInput(rx);
 
         //TODO:See if this works
         if (drive.getDegreeRoll() > NebulaConstants.Drive.tippingTolerance) {
