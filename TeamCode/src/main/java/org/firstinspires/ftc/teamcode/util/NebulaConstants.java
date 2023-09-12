@@ -189,7 +189,7 @@ public class NebulaConstants {
         return value * Math.abs(value);
     }
     public static double cubeInput(double value) {
-        return value * Math.abs(value);
+        return value * Math.abs(value) * Math.abs(value);
     }
 
 }
